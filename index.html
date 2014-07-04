@@ -71,10 +71,10 @@
           </button>
           <a class="brand" href="#">條條好爛路@tw</a>
           <div class="nav-collapse collapse">
-            <p class="navbar-text pull-right">
-                <span ng-show="user_current()" ng-click="logout()">登出</span>
-                <span ng-show="!user_current()" ng-click="login()">登入後進行投票</span>
-            </p>
+                <div class="btn-group pull-right">
+                  <button ng-show="user_current()" ng-click="logout()" type="button" class="btn btn-default">登出</button>
+                  <button ng-show="!user_current()" ng-click="login()" type="button" class="btn btn-default"><i class="fa fa-user"></i> 登入後進行投票</button>
+                </div>
             <ul class="nav">
               <li><a href="#about">關於</a></li>
               <li><a href="#contact">聯絡</a></li>

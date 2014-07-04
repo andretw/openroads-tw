@@ -186,10 +186,16 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         Parse.FacebookUtils.logIn(null, {
           success: function(user) {
             if (!user.existed()) {
-              alert("User signed up and logged in through Facebook!");
+              alert("已經使用 Facebook 帳號註冊並登入成功!");
+              //alert("User signed up and logged in through Facebook!");
             } else {
-              alert("User logged in through Facebook!");
+              alert("已經透過 Facebook 登入成功!");
+              //alert("User logged in through Facebook!");
             }
+
+            $scope.$apply(function() {
+                $scope.user_current();
+            });
           },
           error: function(user, error) {
             alert("User cancelled the Facebook login or did not fully authorize.");
@@ -197,6 +203,10 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         });
     }
 
+
+    $scope.logout = function(){
+        Parse.User.logOut();
+    }
 
     var VoteScore = Parse.Object.extend("VoteScore");
     var voteScore = new VoteScore();
