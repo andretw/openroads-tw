@@ -27,7 +27,8 @@ def main(source_file):
             if not row[2] in data[row[1]]:
                 data[row[1]][row[2]] = []
 
-            data[row[1]][row[2]].append(row[3])
+            if row[3] not in data[row[1]][row[2]]:
+                data[row[1]][row[2]].append(row[3])
 
     f.close()
 

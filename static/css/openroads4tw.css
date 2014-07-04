@@ -1,0 +1,56 @@
+.hero-unit {
+	padding: 4px;
+}
+.myhome {
+	padding-left: 60px;
+	padding-right: 60px;
+	padding-bottom: 20px;
+}
+.nav-header {
+	font-size: 14px;
+}
+.or4tw_city_name{
+	cursor: hand;
+	cursor: pointer; 
+	background-color:#333;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	font-size:14px;
+	line-height:16px;
+}
+
+.or4tw_city_name:hover{
+	text-decoration: underline;
+	color:rgb(236, 229, 202);
+}
+
+.or4tw_town_name{
+	cursor: hand;
+	cursor: pointer; 
+	background-color:#339;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	font-size:14px;
+	line-height:16px;
+}
+
+.or4tw_town_name:hover{
+	text-decoration: underline;
+	color:rgb(236, 229, 202);
+}
+
+.or4tw_road_name{
+	cursor: hand;
+	cursor: pointer; 
+	background-color:#060;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	font-size:14px;
+	line-height:16px;
+
+}
+
+.or4tw_road_name:hover{
+	text-decoration: underline;
+	color:rgb(236, 229, 202);
+}

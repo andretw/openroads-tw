@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+  <head>
+    <meta charset="utf-8">
+    <title>條條好爛路@tw</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="./static/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+    <link href="./static/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="./static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <link href="./static/css/openroads4tw.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="../assets/ico/favicon.png">
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="./static/jquery.qtip.js"></script>
+	<link href="./static/jquery.qtip.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDmM_A5eeAtLRd1j32XMMCfc2iHQBZAHTo&sensor=true"></script>
+
+    <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+
+    <script src="./static/js/angular.min.js"></script>
+    <script src="./static/js/URI.js"></script>
+
+    <script src="./static/js/app/langpack.js"></script>
+    <script src="./static/js/app/main.js"></script>
+
+  </head>
+
+  <body ng-controller="MainCtrl" ng-cloak class="ng-cloak">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">條條好爛路@tw</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+                <span ng-click="login()">登入後進行投票</span>
+            </p>
+            <ul class="nav">
+              <li><a href="#about">關於</a></li>
+              <li><a href="#contact">聯絡</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">{{ city_name }} 好路 10 條:</li>
+              <li class="active"><a href="#"></a></li>
+		      {% for road in roads %}
+			  <li><a href="#">{{ road.road }}</a></li>
+		  	  {% endfor %}
+              <li class="nav-header">{{ city_name }} 爛路 10 條:</li>
+			  <li class="active"><a href="#"></a></li>
+		      {% for road in bad_roads %}
+			  <li><a href="#">{{ road.road }}</a></li>
+		  	  {% endfor %}
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+          <div class="hero-unit">
+			<div id="map_canvas" style="width:100%; height:300px"></div>
+			<br/>
+
+            <div class="container-fluid">
+              <div class="row-fluid">
+                <div class="span6">
+
+        			<div class="myhome">
+                    <h1>條條好爛路@tw</h1>
+        			<br />
+                    <p>延伸閱讀: <a href="http://blog.xuite.net/volksppt/op/12196278" target="_blank"> 看看道路施工 我們跟日本的差別</a></p>
+                    <p>繼續忍受: <a href="http://www.tvbs.com.tw/NEWS/NEWS_LIST.asp?no=betty0045520111026192935" target="_blank">【路見不平】最爛道路！亂挖坑洞多　5年未改善</a></p>
+        			</div>
+                </div>
+                <div class="span6">
+                    <p>
+                        <span ng-repeat="item in selected_items | filter:{item: '!!'}"><i class="fa fa-angle-double-right"></i> {{item}} </span>
+                        <span class="btn-group" ng-show="selected_items[3]">
+                          <button type="button" class="btn btn-default"><i class="fa fa-chevron-up"></i> 讚</button>
+                          <button type="button" class="btn btn-default"><i class="fa fa-chevron-down"></i> 爛</button>
+                      </span>
+                    </p>
+                </div>
+              </div>
+          </div>
+		  </div>
+          <div class="row-fluid">
+            <div class="span4">
+              <h2>縣市</h2>
+              <div>
+                  <span ng-repeat="city in cities" class='label or4tw_city_name' ng-click="getTowns(city)">{{city}}</span>
+              </div>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>鄉鎮市區</h2>
+              <div ng-show="!towns">請先選擇縣市</div>
+              <div ng-show="towns">
+                  <span ng-repeat="(town, roads) in towns" class='label or4tw_town_name' ng-click="getRoads(town)">{{town}}</span>
+              </div>
+            </div><!--/span-->
+            <div class="span4">
+              <h2>路</h2>
+              <div ng-show="!roads">請先選擇鄉鎮市區</div>
+              <div ng-show="roads">
+                  <span ng-repeat="road in roads track by $index" class='label or4tw_city_name' ng-click="selectRoad(road)">{{road}}</span>
+              </div>
+            </div><!--/span-->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; <a href="http://andretw.com" target="_blank">andretw</a> 2013 - {{current_year}}</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+	<div id="fb-root"></div>
+	<script>
+	  // Additional JS functions here
+	  window.fbAsyncInit = function() {
+	    Parse.FacebookUtils.init({
+	      appId      : '268242413307600', // App ID
+	      channelUrl : '//lab.andretw.com/openroads-tw/channel.html', // Channel File
+	      cookie     : true, // enable cookies to allow the server to access the session
+	      xfbml      : true  // parse XFBML
+	    });
+
+	    // Additional init code here
+
+	  };
+
+	  // Load the SDK Asynchronously
+	  (function(d){
+	     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement('script'); js.id = id; js.async = true;
+	     js.src = "//connect.facebook.net/en_US/all.js";
+	     ref.parentNode.insertBefore(js, ref);
+	   }(document));
+	</script>
+
+  </body>
+</html>
