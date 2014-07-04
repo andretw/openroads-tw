@@ -252,27 +252,35 @@ function MainCtrl($rootScope, $scope, $http, $q) {
 
     $scope.vote = function(city, town, road, point){
 
-        voteScore.set("city", city);
-        voteScore.set("town", town);
-        voteScore.set("road", road);
+        var is_login = $scope.user_current();
+        if(is_login){
+
+            voteScore.set("city", city);
+            voteScore.set("town", town);
+            voteScore.set("road", road);
 
 
-        if (point >= 0){
-            voteScore.increment("good");
-            voteScore.increment("total");
+            if (point >= 0){
+                voteScore.increment("good");
+                voteScore.increment("total");
+            }else{
+                voteScore.increment("bad");
+                voteScore.increment("total", -1);
+            }
+
+            voteScore.save(null, {
+              success: function(voteScore) {
+                console.log('New object created with objectId: ' + voteScore.id);
+                alert('投票成功!');
+              },
+              error: function(voteScore, error) {
+                console.log('Failed to create new object, with error code: ' + error.message);
+                alert('投票失敗...');
+              }
+            });
         }else{
-            voteScore.increment("bad");
-            voteScore.increment("total", -1);
+            alert('請進行登入');
         }
-
-        voteScore.save(null, {
-          success: function(voteScore) {
-            console.log('New object created with objectId: ' + voteScore.id);
-          },
-          error: function(voteScore, error) {
-            console.log('Failed to create new object, with error code: ' + error.message);
-          }
-        });
 
     }
 
