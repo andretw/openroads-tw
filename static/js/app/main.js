@@ -59,6 +59,9 @@ function MainCtrl($rootScope, $scope, $http, $q) {
     var map;
     var cities;
 
+    $scope.good_roads = null;
+    $scope.bad_roads = null;
+
     // 1: city, 2: town, 3: road
     $scope.selected_items = {};
 
@@ -66,10 +69,25 @@ function MainCtrl($rootScope, $scope, $http, $q) {
     $scope.towns = [];
     $scope.roads = [];
 
-    init = function(){
+    $scope.init = function(){
 
-        var roads = [ '台北市 北安路',  '台北市 港東街',  '台北市 永吉路',  '台北市 松河街',  '台北市 東明街',
-        '台北市 東新街',  '台北市 東南街',  '台北市 昆陽街',  '台北市 新民街',  '台北市 成福路', ];
+        $scope.cities = ["基隆市", "臺北市", "新北市", "桃園縣", "新竹市", "新竹縣", "苗栗縣", "臺中市", "彰化縣", "南投縣",
+                  "雲林縣", "嘉義市", "嘉義縣", "臺南市", "高雄市", "屏東縣", "台東縣", "花蓮縣", "宜蘭縣", "澎湖縣",
+                  "金門縣", "連江縣"];
+
+        Parse.initialize("x3m8QUKprKNmrMJCFRNRH2nwSsqXPyDcARcFpSL1", "WTGqTPtCubmHZcpLoI2YjmbjlOhXpH4YtHNADFqc");
+
+        $scope.getHotRoads(1);
+        $scope.getHotRoads(-1);
+    }
+
+    drawMap = function(road_objs){
+
+        var roads = []
+
+        for (r in road_objs){
+            roads.push(road_objs[r].city + " " +road_objs[r].road);
+        }
 
         geocoder = new google.maps.Geocoder();
         var myLatlng = new google.maps.LatLng(25.040096, 121.512029);
@@ -81,17 +99,12 @@ function MainCtrl($rootScope, $scope, $http, $q) {
 
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-        $scope.cities = ["基隆市", "臺北市", "新北市", "桃園縣", "新竹市", "新竹縣", "苗栗縣", "臺中市", "彰化縣", "南投縣",
-                  "雲林縣", "嘉義市", "嘉義縣", "臺南市", "高雄市", "屏東縣", "台東縣", "花蓮縣", "宜蘭縣", "澎湖縣",
-                  "金門縣", "連江縣"];
-
         setMapCenter("台北市");
 
         for (var i = 0; i < roads.length; i++){
             codeAddress(roads[i]);
         }
 
-        Parse.initialize("rcvzOkxw7EiC5MDoZIZso4gMhU6F01Tf24fGCIIw", "xxo4tGdLuaJnSk2lU3jJpJVqrHGEEBDSAgoLl9qv");
     }
 
     setMapCenter = function(address){
@@ -147,10 +160,10 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         return( response.data );
     }
 
-
-    init();
-
     $scope.getTowns = function(city){
+        $scope.getHotRoads(1, city);
+        $scope.getHotRoads(-1, city);
+
         $scope.selected_items = {};
         $scope.selected_items[1] = city;
         $scope.roads = [];
@@ -183,4 +196,79 @@ function MainCtrl($rootScope, $scope, $http, $q) {
           }
         });
     }
+
+
+    var VoteScore = Parse.Object.extend("VoteScore");
+    var voteScore = new VoteScore();
+
+    $scope.getHotRoads = function(point, city){
+        var query = new Parse.Query(VoteScore);
+
+        if(city){
+            query.equalTo('city', city);
+        }
+
+        query.find({
+          success: function(results) {
+              console.log('results', results);
+              $scope.$apply(function() {
+                  var hot_roads = [];
+                  for (item in results){
+                      console.log('item', item);
+                      if(results[item] && results[item].attributes){
+                          hot_roads.push({city: results[item].attributes.city,
+                                          town: results[item].attributes.town,
+                                          road: results[item].attributes.road,
+                                          total: parseInt(results[item].attributes.total),
+                                          good: parseInt(results[item].attributes.good),
+                                          bad: parseInt(results[item].attributes.bad),
+                                          });
+                      }
+                  }
+                  if(point >= 0){
+                      $scope.good_roads = hot_roads;
+                  }else{
+                      drawMap(hot_roads);
+                      $scope.bad_roads = hot_roads;
+                  }
+              });
+          },
+
+          error: function(error) {
+            console.log('error', error);
+          }
+        });
+    }
+
+    $scope.vote = function(city, town, road, point){
+
+        voteScore.set("city", city);
+        voteScore.set("town", town);
+        voteScore.set("road", road);
+
+
+        if (point >= 0){
+            voteScore.increment("good");
+            voteScore.increment("total");
+        }else{
+            voteScore.increment("bad");
+            voteScore.increment("total", -1);
+        }
+
+        voteScore.save(null, {
+          success: function(voteScore) {
+            console.log('New object created with objectId: ' + voteScore.id);
+          },
+          error: function(voteScore, error) {
+            console.log('Failed to create new object, with error code: ' + error.message);
+          }
+        });
+
+    }
+
+    $scope.user_current = function(){
+        return Parse.User.current();
+    }
+
+    $scope.init();
 }

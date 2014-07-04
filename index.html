@@ -72,7 +72,8 @@
           <a class="brand" href="#">條條好爛路@tw</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-                <span ng-click="login()">登入後進行投票</span>
+                <span ng-show="user_current()" ng-click="logout()">登出</span>
+                <span ng-show="!user_current()" ng-click="login()">登入後進行投票</span>
             </p>
             <ul class="nav">
               <li><a href="#about">關於</a></li>
@@ -88,16 +89,16 @@
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">{{ city_name }} 好路 10 條:</li>
+              <li class="nav-header"><span ng-show="!selected_items[1]">全台灣</span><span ng-show="selected_items[1]">{{ selected_items[1] }}</span> 好路 10 條:</li>
               <li class="active"><a href="#"></a></li>
-		      {% for road in roads %}
-			  <li><a href="#">{{ road.road }}</a></li>
-		  	  {% endfor %}
-              <li class="nav-header">{{ city_name }} 爛路 10 條:</li>
+			  <li ng-repeat="item in good_roads | orderBy:'good'">
+                  <a href="#">{{item.town}} {{item.road}} <span class="badge">{{item.good}}</span></a>
+              </li>
+              <li class="nav-header"><span ng-show="!selected_items[1]">全台灣</span><span ng-show="selected_items[1]">{{ selected_items[1] }}</span> 爛路 10 條:</li>
 			  <li class="active"><a href="#"></a></li>
-		      {% for road in bad_roads %}
-			  <li><a href="#">{{ road.road }}</a></li>
-		  	  {% endfor %}
+              <li ng-repeat="item in bad_roads | orderBy:'bad':true">
+                  <a href="#">{{item.town}} {{item.road}} <span class="badge">-{{item.bad}}</span></a>
+              </li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
@@ -121,8 +122,8 @@
                     <p>
                         <span ng-repeat="item in selected_items | filter:{item: '!!'}"><i class="fa fa-angle-double-right"></i> {{item}} </span>
                         <span class="btn-group" ng-show="selected_items[3]">
-                          <button type="button" class="btn btn-default"><i class="fa fa-chevron-up"></i> 讚</button>
-                          <button type="button" class="btn btn-danger"><i class="fa fa-chevron-down"></i> 爛</button>
+                          <button type="button" class="btn btn-default" ng-click="vote(selected_items[1], selected_items[2], selected_items[3], 1)"><i class="fa fa-chevron-up"></i> 讚</button>
+                          <button type="button" class="btn btn-danger" ng-click="vote(selected_items[1], selected_items[2], selected_items[3], -1)"><i class="fa fa-chevron-down"></i> 爛</button>
                       </span>
                     </p>
                 </div>
