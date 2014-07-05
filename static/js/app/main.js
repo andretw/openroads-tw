@@ -94,7 +94,7 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         geocoder = new google.maps.Geocoder();
         var myLatlng = new google.maps.LatLng(25.040096, 121.512029);
         var mapOptions = {
-            //zoom: 10,
+            zoom: 10,
             center: myLatlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         }
