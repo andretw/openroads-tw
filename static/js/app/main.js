@@ -83,23 +83,25 @@ function MainCtrl($rootScope, $scope, $http, $q) {
 
     drawMap = function(road_objs){
 
-        var roads = []
+        var roads = [];
+        var mapCenter = "臺北市";
 
         for (r in road_objs){
+            mapCenter = road_objs[r].city;
             roads.push(road_objs[r].city + " " +road_objs[r].road);
         }
 
         geocoder = new google.maps.Geocoder();
         var myLatlng = new google.maps.LatLng(25.040096, 121.512029);
         var mapOptions = {
-            zoom: 10,
+            //zoom: 10,
             center: myLatlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         }
 
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-        setMapCenter("台北市");
+        setMapCenter(mapCenter);
 
         for (var i = 0; i < roads.length; i++){
             codeAddress(roads[i]);
