@@ -101,7 +101,8 @@ function MainCtrl($rootScope, $scope, $http, $q) {
 
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-        setMapCenter(mapCenter);
+        console.log('mapCenter', mapCenter);
+        setMapCenter("臺北市");
 
         for (var i = 0; i < roads.length; i++){
             codeAddress(roads[i]);
