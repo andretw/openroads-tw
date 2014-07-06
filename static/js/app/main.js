@@ -1,16 +1,5 @@
 function MainCtrl($rootScope, $scope, $http, $q) {
 
-    String.prototype.hashCode = function(){
-        var hash = 0;
-        if (this.length == 0) return hash;
-        for (i = 0; i < this.length; i++) {
-            char = this.charCodeAt(i);
-            hash = ((hash<<5)-hash)+char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return hash;
-    }
-
     var getCurrentLang, getQueryParam;
 
     getQueryParam = function(name) {
@@ -277,53 +266,47 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         var is_login = $scope.user_current();
         if(is_login){
 
-            objectId = String(city + town + road).hashCode();
-            console.log('objectId', objectId);
-
-            var voteScore = new VoteScore();
-
             var query = new Parse.Query(VoteScore);
+            query.equalTo('city', city);
+            query.equalTo('town', town);
+            query.equalTo('road', road);
 
-            query.get(objectId, {
+            query.find({
               success: function(result) {
-                // The object was retrieved successfully.
-                console.log('result', result);
-                voteScore.set('objectId') = objectId;
-
+                console.log('found', result);
               },
-              error: function(object, error) {
-                // The object was not retrieved successfully.
-                // error is a Parse.Error with an error code and description.
-                console.log('error', object, error);
 
-                if (error.code == 101){
-                  voteScore.set("city", city);
-                  voteScore.set("town", town);
-                  voteScore.set("road", road);
-                  voteScore.set("good", 0);
-                  voteScore.set("bad", 0);
-                  voteScore.set("total", 0);
+              error: function(error) {
+                console.log('error', error);
+
+                var voteScore = new VoteScore();
+                voteScore.set("city", city);
+                voteScore.set("town", town);
+                voteScore.set("road", road);
+
+                voteScore.set("good", 0);
+                voteScore.set("bad", 0);
+                voteScore.set("total", 0);
+
+                if (point >= 0){
+                    voteScore.increment("good");
+                    voteScore.increment("total");
+                }else{
+                    voteScore.increment("bad");
+                    voteScore.increment("total", -1);
                 }
-              }
-            });
 
+                voteScore.save(null, {
+                  success: function(voteScore) {
+                    console.log('New object created with objectId: ' + voteScore.id);
+                    alert('投票成功!');
+                  },
+                  error: function(voteScore, error) {
+                    console.log('Failed to create new object, with error code: ' + error.message);
+                    alert('投票失敗...');
+                  }
+                });
 
-            if (point >= 0){
-                voteScore.increment("good");
-                voteScore.increment("total");
-            }else{
-                voteScore.increment("bad");
-                voteScore.increment("total", -1);
-            }
-
-            voteScore.save(null, {
-              success: function(voteScore) {
-                console.log('New object created with objectId: ' + voteScore.id);
-                alert('投票成功!');
-              },
-              error: function(voteScore, error) {
-                console.log('Failed to create new object, with error code: ' + error.message);
-                alert('投票失敗...');
               }
             });
         }else{
