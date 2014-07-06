@@ -281,7 +281,6 @@ function MainCtrl($rootScope, $scope, $http, $q) {
             console.log('objectId', objectId);
 
             var voteScore = new VoteScore();
-            var voteScore.set('objectId') = objectId;
 
             var query = new Parse.Query(VoteScore);
 
@@ -289,6 +288,7 @@ function MainCtrl($rootScope, $scope, $http, $q) {
               success: function(result) {
                 // The object was retrieved successfully.
                 console.log('result', result);
+                voteScore.set('objectId') = objectId;
 
               },
               error: function(object, error) {
