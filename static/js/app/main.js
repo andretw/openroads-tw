@@ -277,27 +277,35 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         var is_login = $scope.user_current();
         if(is_login){
 
-            objectId = String(city + town + road).hashCode;
+            objectId = String(city + town + road).hashCode();
             console.log('objectId', objectId);
 
             var voteScore = new VoteScore();
+            var voteScore.set('objectId') = objectId;
+
             var query = new Parse.Query(VoteScore);
 
             query.get(objectId, {
               success: function(result) {
                 // The object was retrieved successfully.
                 console.log('result', result);
+
               },
               error: function(object, error) {
                 // The object was not retrieved successfully.
                 // error is a Parse.Error with an error code and description.
                 console.log('error', object, error);
+
+                if (error.code == 101){
+                  voteScore.set("city", city);
+                  voteScore.set("town", town);
+                  voteScore.set("road", road);
+                  voteScore.set("good", 0);
+                  voteScore.set("bad", 0);
+                  voteScore.set("total", 0);
+                }
               }
             });
-
-            voteScore.set("city", city);
-            voteScore.set("town", town);
-            voteScore.set("road", road);
 
 
             if (point >= 0){
