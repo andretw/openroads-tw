@@ -301,6 +301,13 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         return Parse.User.current();
     }
 
+    $scope.goodHotRoadFilter = function (item) {
+        return item.good > 0;
+    };
+
+    $scope.badHotRoadFilter = function (item) {
+        return item.bad > 0;
+    };
 
     // disqus
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
