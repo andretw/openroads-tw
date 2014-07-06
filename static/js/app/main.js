@@ -1,4 +1,16 @@
 function MainCtrl($rootScope, $scope, $http, $q) {
+
+    String.prototype.hashCode = function(){
+        var hash = 0;
+        if (this.length == 0) return hash;
+        for (i = 0; i < this.length; i++) {
+            char = this.charCodeAt(i);
+            hash = ((hash<<5)-hash)+char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    }
+
     var getCurrentLang, getQueryParam;
 
     getQueryParam = function(name) {
@@ -222,7 +234,6 @@ function MainCtrl($rootScope, $scope, $http, $q) {
     }
 
     var VoteScore = Parse.Object.extend("VoteScore");
-    var voteScore = new VoteScore();
 
     $scope.getHotRoads = function(point, city){
         var query = new Parse.Query(VoteScore);
@@ -265,6 +276,24 @@ function MainCtrl($rootScope, $scope, $http, $q) {
 
         var is_login = $scope.user_current();
         if(is_login){
+
+            objectId = String(city + town + road).hashCode;
+            consoel.log('objectId', objectId);
+
+            var voteScore = new VoteScore();
+            var query = new Parse.Query(VoteScore);
+
+            query.get(objectId, {
+              success: function(result) {
+                // The object was retrieved successfully.
+                console.log('result', result);
+              },
+              error: function(object, error) {
+                // The object was not retrieved successfully.
+                // error is a Parse.Error with an error code and description.
+                console.log('error', object, error);
+              }
+            });
 
             voteScore.set("city", city);
             voteScore.set("town", town);
