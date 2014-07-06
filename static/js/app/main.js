@@ -86,8 +86,12 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         var roads = [];
         var mapCenter = "臺北市";
 
+
+        if (road_objs && road_objs[0]){
+            mapCenter = road_objs[0].city;
+        }
+
         for (r in road_objs){
-            mapCenter = road_objs[r].city;
             roads.push(road_objs[r].city + " " +road_objs[r].road);
         }
 
@@ -102,7 +106,7 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
         console.log('mapCenter', mapCenter);
-        setMapCenter("臺北市");
+        setMapCenter(mapCenter);
 
         for (var i = 0; i < roads.length; i++){
             codeAddress(roads[i]);
@@ -115,7 +119,7 @@ function MainCtrl($rootScope, $scope, $http, $q) {
             if (status == google.maps.GeocoderStatus.OK) {
                 map.setCenter(results[0].geometry.location);
             } else {
-                alert('Geocode was not successful for the following reason: ' + status);
+                console.log('Geocode was not successful for the following reason: ' + status);
             }
         });
     }
@@ -128,7 +132,7 @@ function MainCtrl($rootScope, $scope, $http, $q) {
                     position: results[0].geometry.location
                 });
             } else {
-                alert('Geocode was not successful for the following reason: ' + status);
+                console.log('Geocode was not successful for the following reason: ' + status);
             }
         });
     }
