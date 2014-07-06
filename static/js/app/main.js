@@ -278,7 +278,7 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         if(is_login){
 
             objectId = String(city + town + road).hashCode;
-            consoel.log('objectId', objectId);
+            console.log('objectId', objectId);
 
             var voteScore = new VoteScore();
             var query = new Parse.Query(VoteScore);
