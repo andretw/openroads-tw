@@ -87,8 +87,8 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         var mapCenter = "臺北市";
 
 
-        if (road_objs && road_objs[0]){
-            mapCenter = road_objs[0].city;
+        if ($scope.selected_items && $scope.selected_items[1]){
+            mapCenter = $scope.selected_items[1];
         }
 
         for (r in road_objs){
