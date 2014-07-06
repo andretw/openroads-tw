@@ -92,14 +92,14 @@
               <li class="nav-header"><span ng-show="!selected_items[1]">全台灣</span><span ng-show="selected_items[1]">{{ selected_items[1] }}</span> 好路 10 條:</li>
               <li class="active"><a href="#"></a></li>
 			  <li ng-repeat="item in good_roads | orderBy:'good'">
-                  <a href="#" ng-show="!selected_items[1]">{{item.city}} {{item.town}} {{item.road}} <span class="badge">{{item.good}}</span></a>
-                  <a href="#" ng-show="selected_items[1]">{{item.town}} {{item.road}} <span class="badge">{{item.good}}</span></a>
+                  <a ng-click="selectRoad(item.road, item.town, item.city)" ng-show="!selected_items[1]">{{item.city}} {{item.town}} {{item.road}} <span class="badge">{{item.good}}</span></a>
+                  <a ng-click="selectRoad(item.road, item.town, item.city)" ng-show="selected_items[1]">{{item.town}} {{item.road}} <span class="badge">{{item.good}}</span></a>
               </li>
               <li class="nav-header"><span ng-show="!selected_items[1]">全台灣</span><span ng-show="selected_items[1]">{{ selected_items[1] }}</span> 爛路 10 條:</li>
 			  <li class="active"><a href="#"></a></li>
               <li ng-repeat="item in bad_roads | orderBy:'bad':true">
-                  <a href="#" ng-show="!selected_items[1]">{{item.city}} {{item.town}} {{item.road}} <span class="badge">-{{item.bad}}</span></a>
-                  <a href="#" ng-show="selected_items[1]">{{item.town}} {{item.road}} <span class="badge">-{{item.bad}}</span></a>
+                  <a ng-click="selectRoad(item.road, item.town, item.city)" ng-show="!selected_items[1]">{{item.city}} {{item.town}} {{item.road}} <span class="badge">-{{item.bad}}</span></a>
+                  <a ng-click="selectRoad(item.road, item.town, item.city)" ng-show="selected_items[1]">{{item.town}} {{item.road}} <span class="badge">-{{item.bad}}</span></a>
               </li>
             </ul>
           </div><!--/.well -->

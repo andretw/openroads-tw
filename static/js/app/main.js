@@ -185,8 +185,14 @@ function MainCtrl($rootScope, $scope, $http, $q) {
         $scope.roads = roads;
     }
 
-    $scope.selectRoad = function(road){
+    $scope.selectRoad = function(road, town, city){
         $scope.selected_items[3] = road;
+        if (town){
+            $scope.selected_items[2] = town;
+        }
+        if (city){
+            $scope.selected_items[1] = city;
+        }
     }
 
     $scope.login = function(){
